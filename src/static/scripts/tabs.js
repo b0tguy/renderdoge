@@ -2,7 +2,7 @@ import { BareMuxConnection } from '@mercuryworkshop/bare-mux';
 import * as contentObserver from './content_observer';
 import { setupHotkeys } from './hotkeys';
 import { CONFIG } from './config';
-const BASE = import.meta.env.BASE_URL;
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 class TabManager {
   constructor() {
@@ -542,7 +542,7 @@ window.addEventListener('load', async function () {
   }
 
   try {
-    await navigator.serviceWorker.register('/s_sw.js', {
+    await navigator.serviceWorker.register(BASE+'/s_sw.js', {
       scope: BASE +'/scramjet/',
     });
   } catch (err) {
