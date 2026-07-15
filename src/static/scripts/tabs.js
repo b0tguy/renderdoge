@@ -2,6 +2,7 @@ import { BareMuxConnection } from '@mercuryworkshop/bare-mux';
 import * as contentObserver from './content_observer';
 import { setupHotkeys } from './hotkeys';
 import { CONFIG } from './config';
+const BASE = import.meta.env.BASE_URL;
 
 class TabManager {
   constructor() {
@@ -303,7 +304,7 @@ class TabManager {
         f.style.zIndex = 10;
         f.style.opacity = '1';
         f.style.pointerEvents = 'auto';
-        f.src = '/uv/service/' + encodeURIComponent(url);
+        f.src = BASE+ '/uv/service/' + encodeURIComponent(url);
         this.ic.appendChild(f);
       }
 
@@ -318,7 +319,7 @@ class TabManager {
           sf.go(url);
         }
       } else {
-        if (f) f.src = '/uv/service/' + encodeURIComponent(url);
+        if (f) f.src = BASE + '/uv/service/' + encodeURIComponent(url);
       }
       t.url = url;
     }
@@ -482,7 +483,7 @@ window.addEventListener('load', async function () {
   window.scr = null;
 
   const { ScramjetController } = $scramjetLoadController();
-  const connection = new BareMuxConnection('/baremux/worker.js');
+  const connection = new BareMuxConnection(BASE + '/baremux/worker.js');
   const log = (...args) =>
     console.log('%c[INFO]%c', 'color: #0af; font-weight: bold;', 'color: inherit;', ...args);
 
@@ -494,10 +495,11 @@ window.addEventListener('load', async function () {
 
   const ws =
     JSON.parse(localStorage.getItem('options') || {}).wServer ||
-    `${location.protocol === 'https:' ? 'wss:' : 'ws:'}//${location.host}${CONFIG.ws}`;
-
+    (CONFIG.ws.includes('://')
+      ? CONFIG.ws
+      : `${location.protocol === 'https:' ? 'wss:' : 'ws:'}//${location.host}${CONFIG.ws}`);
   try {
-    await connection.setTransport('/epoxy/index.mjs', [{ wisp: ws }]);
+    await connection.setTransport(BASE + '/epoxy/index.mjs', [{ wisp: ws }]);
   } catch (e) {
     error('setTransport failed:', e);
     throw e;
@@ -521,9 +523,9 @@ window.addEventListener('load', async function () {
 
   window.scr = new ScramjetController({
     files: {
-      wasm: '/scram/scramjet.wasm.wasm',
-      all: '/scram/scramjet.all.js',
-      sync: '/scram/scramjet.sync.js',
+      wasm: BASE +'/scram/scramjet.wasm.wasm',
+      all: BASE +'/scram/scramjet.all.js',
+      sync: BASE +'/scram/scramjet.sync.js',
     },
     flags: {
       rewriterLogs: false,
@@ -541,7 +543,7 @@ window.addEventListener('load', async function () {
 
   try {
     await navigator.serviceWorker.register('/s_sw.js', {
-      scope: '/scramjet/',
+      scope: BASE +'/scramjet/',
     });
   } catch (err) {
     error('scr sw reg err:', err);
@@ -549,7 +551,7 @@ window.addEventListener('load', async function () {
   }
 
   try {
-    await navigator.serviceWorker.register('/uv/sw.js');
+    await navigator.serviceWorker.register(BASE + '/uv/sw.js');
   } catch (err) {
     error('uv sw reg err:', err);
     throw err;
