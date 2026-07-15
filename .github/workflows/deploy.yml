@@ -18,7 +18,7 @@ jobs:
       - run: npm run build:pages
         env:
           PAGES_BASE: /renderdoge/
-          VITE_BACKEND_HOST: https://dogev5workpls-oljwn.ondigitalocean.app/
+          VITE_BACKEND_HOST: dogev5workpls-oljwn.ondigitalocean.app/
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
