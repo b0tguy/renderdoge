@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:pages": "vite build && node scripts/copy-proxy-assets.mjs",
+    "build:pages": "node scripts/copy-proxy-assets.mjs && vite build",
     "start": "node server.js",
     "lint": "eslint .",
     "preview": "vite preview"
