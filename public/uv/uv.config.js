@@ -37,9 +37,15 @@ const blockedsites = [
 
 var adblock = 1;
 
+// Derive the deployment's base path at runtime (e.g. '/' normally, or '/renderdoge/'
+// when served from a GitHub Pages subpath) instead of hardcoding root-absolute paths.
+const uvBase = self.location.pathname.includes('/uv/')
+  ? self.location.pathname.split('/uv/')[0] + '/'
+  : '/';
+
 const k = new TextEncoder().encode(btoa(new Date().toISOString().slice(0, 10) + location.host).split('').reverse().join('').slice(6.7));
 self.__uv$config = {
-    prefix: "/uv/service/",
+    prefix: uvBase + "uv/service/",
 	encodeUrl: s => {
         if (!s) return s;
         try {
@@ -67,11 +73,11 @@ self.__uv$config = {
             return new TextDecoder().decode(o) + s.slice(h);
         } catch { return decodeURIComponent(s); }
     },
-    handler: '/uv/uv.handler.js',
-    client: '/uv/uv.client.js',
-    bundle: '/uv/uv.bundle.js',
-    config: '/uv/uv.config.js',
-    sw: '/uv/uv.sw.js',
+	handler: uvBase + 'uv/uv.handler.js',
+    client: uvBase + 'uv/uv.client.js',
+    bundle: uvBase + 'uv/uv.bundle.js',
+    config: uvBase + 'uv/uv.config.js',
+    sw: uvBase + 'uv/uv.sw.js',
   },
 
    self.__uv$config.middleware = (request) => {
