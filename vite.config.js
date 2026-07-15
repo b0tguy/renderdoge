@@ -32,6 +32,7 @@ const obf = {
 };
 
 export default defineConfig({
+  base: process.env.PAGES_BASE || '/',
   plugins: [react(), vitePluginBundleObfuscator(obf)],
   build: {
     esbuild: {
